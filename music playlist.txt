@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_SONGS 100
+#define MAX_LENGTH 50
+
+struct Song {
+    char title[MAX_LENGTH];
+    char artist[MAX_LENGTH];
+};
+
+struct Playlist {
+    struct Song songs[MAX_SONGS];
+    int numSongs;
+};
+
+void insertSong(struct Playlist *playlist, char title[], char artist[]) {
+    if (playlist->numSongs < MAX_SONGS) {
+        strcpy(playlist->songs[playlist->numSongs].title, title);
+        strcpy(playlist->songs[playlist->numSongs].artist, artist);
+        playlist->numSongs++;
+        printf("Song inserted successfully.\n");
+       printf("Inserted song is %s\n",title);
+
+    } else {
+        printf("Playlist is full. Cannot insert more songs.\n");
+    }
+}
+
+void deleteSong(struct Playlist *playlist, char title[]) {
+    int i, found = 0;
+    for (i = 0; i < playlist->numSongs; i++) {
+        if (strcmp(playlist->songs[i].title, title) == 0) {
+            found = 1;
+            for (int j = i; j < playlist->numSongs - 1; j++) {
+                strcpy(playlist->songs[j].title, playlist->songs[j + 1].title);
+                strcpy(playlist->songs[j].artist, playlist->songs[j + 1].artist);
+            }
+            playlist->numSongs--;
+            printf("Song deleted successfully.\n");
+            break;
+        }
+    }
+    if (!found) {
+        printf("Song not found in the playlist.\n");
+    }
+}
+
+void searchSong(struct Playlist *playlist, char title[]) {
+    int i, found = 0;
+    for (i = 0; i < playlist->numSongs; i++) {
+        if (strcmp(playlist->songs[i].title, title) == 0) {
+            found = 1;
+            printf("Song found in the playlist:\nTitle: %s\nArtist: %s\n", playlist->songs[i].title, playlist->songs[i].artist);
+            break;
+        }
+    }
+    if (!found) {
+        printf("Song not found in the playlist.\n");
+    }
+}
+
+int main() {
+    struct Playlist myPlaylist;
+    myPlaylist.numSongs = 0;
+    int choice;
+    char title[MAX_LENGTH], artist[MAX_LENGTH];
+
+    do {
+        printf("\nMusic Playlist Management\n");
+        printf("1. Insert a Song\n");
+        printf("2. Delete a Song\n");
+        printf("3. Search for a Song\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the title of the song: ");
+                scanf(" %[^\n]s", title);
+                printf("Enter the artist of the song: ");
+                scanf(" %[^\n]s", artist);
+                insertSong(&myPlaylist, title, artist);
+                
+                break;
+            case 2:
+                printf("Enter the title of the song to delete: ");
+                scanf(" %[^\n]s", title);
+                deleteSong(&myPlaylist, title);
+                break;
+            case 3:
+                printf("Enter the title of the song to search: ");
+                scanf(" %[^\n]s", title);
+                searchSong(&myPlaylist, title);
+                break;
+            case 4:
+                printf("Exiting the program. Goodbye!\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
